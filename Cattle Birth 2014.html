@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="page-columns page-rows-contents page-layout-article">
+
+<main class="content">
+
+<header class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Final Project</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>DATASET REFERENCE:</p>
+<p>“https://data.europa.eu/data/datasets/e50ca3e5-787e-4911-bc9e-d8012fa5af7a?locale=en”</p>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb1-1"></a><span class="co"># Load necessary library</span></span>
+<span><a rel="noopener" href="#cb1-2"></a><span class="fu">library</span>(dplyr)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb5-1"></a><span class="co"># Read the CSV file</span></span>
+<span><a rel="noopener" href="#cb5-2"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;cattle birth 2016.csv&quot;</span>)</span>
+<span><a rel="noopener" href="#cb5-3"></a></span>
+<span><a rel="noopener" href="#cb5-4"></a><span class="co"># Create a mapping from month abbreviations to numbers</span></span>
+<span><a rel="noopener" href="#cb5-5"></a>month_to_num <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">JAN =</span> <span class="dv">1</span>, <span class="at">FEB =</span> <span class="dv">2</span>, <span class="at">MAR =</span> <span class="dv">3</span>, <span class="at">APR =</span> <span class="dv">4</span>, <span class="at">MAY =</span> <span class="dv">5</span>, <span class="at">JUN =</span> <span class="dv">6</span>,</span>
+<span><a rel="noopener" href="#cb5-6"></a>                  <span class="at">JUL =</span> <span class="dv">7</span>, <span class="at">AUG =</span> <span class="dv">8</span>, <span class="at">SEP =</span> <span class="dv">9</span>, <span class="at">OCT =</span> <span class="dv">10</span>, <span class="at">NOV =</span> <span class="dv">11</span>, <span class="at">DEC =</span> <span class="dv">12</span>)</span>
+<span><a rel="noopener" href="#cb5-7"></a></span>
+<span><a rel="noopener" href="#cb5-8"></a><span class="co"># Convert BIRTH_MONTH column to uppercase (if not already) and then to numeric</span></span>
+<span><a rel="noopener" href="#cb5-9"></a>data<span class="sc">$</span>BIRTH_MONTH <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data<span class="sc">$</span>BIRTH_MONTH, <span class="cf">function</span>(x) month_to_num[<span class="fu">toupper</span>(x)])</span>
+<span><a rel="noopener" href="#cb5-10"></a></span>
+<span><a rel="noopener" href="#cb5-11"></a><span class="co"># Display the updated data</span></span>
+<span><a rel="noopener" href="#cb5-12"></a><span class="fu">head</span>(data)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  BIRTH_YEAR COUNTY_ORIGIN BIRTH_MONTH CALF_BREED_TYPE TOTAL_BIRTH
+1       2016        CARLOW           4            BEEF        3670
+2       2016        CARLOW           4           DAIRY         680
+3       2016        CARLOW           8            BEEF         778
+4       2016        CARLOW           8           DAIRY          80
+5       2016        CARLOW          12            BEEF         835
+6       2016        CARLOW          12           DAIRY         123</code></pre>
+</div>
+</div>
+<p>PART:1</p>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb7-1"></a><span class="fu">summary</span>(data)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   BIRTH_YEAR   COUNTY_ORIGIN       BIRTH_MONTH    CALF_BREED_TYPE   
+ Min.   :2016   Length:624         Min.   : 1.00   Length:624        
+ 1st Qu.:2016   Class :character   1st Qu.: 3.75   Class :character  
+ Median :2016   Mode  :character   Median : 6.50   Mode  :character  
+ Mean   :2016                      Mean   : 6.50                     
+ 3rd Qu.:2016                      3rd Qu.: 9.25                     
+ Max.   :2016                      Max.   :12.00                     
+  TOTAL_BIRTH     
+ Min.   :    6.0  
+ 1st Qu.:  454.5  
+ Median : 1561.5  
+ Mean   : 3655.0  
+ 3rd Qu.: 3825.8  
+ Max.   :95720.0  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb9-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span><a rel="noopener" href="#cb9-2"></a><span class="fu">library</span>(dplyr)</span>
+<span><a rel="noopener" href="#cb9-3"></a></span>
+<span><a rel="noopener" href="#cb9-4"></a><span class="co"># Plot 1: Total Cattle Births per Month in 2016</span></span>
+<span><a rel="noopener" href="#cb9-5"></a>data <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb9-6"></a>  <span class="fu">group_by</span>(BIRTH_MONTH) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb9-7"></a>  <span class="fu">summarise</span>(<span class="at">TOTAL_BIRTH =</span> <span class="fu">sum</span>(TOTAL_BIRTH)) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb9-8"></a>  <span class="fu">mutate</span>(<span class="at">BIRTH_MONTH =</span> <span class="fu">factor</span>(BIRTH_MONTH, <span class="at">levels=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>))) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb9-9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> BIRTH_MONTH, <span class="at">y =</span> TOTAL_BIRTH, <span class="at">fill =</span> BIRTH_MONTH)) <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb9-10"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb9-11"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb9-12"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Total Cattle Births per Month in 2016&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Total Births&quot;</span>)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output-display">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"/></p>
+</div>
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb10-1"></a><span class="co"># Plot 2: Comparison of Beef and Dairy Breed Births in 2016</span></span>
+<span><a rel="noopener" href="#cb10-2"></a>data <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb10-3"></a>  <span class="fu">group_by</span>(CALF_BREED_TYPE) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb10-4"></a>  <span class="fu">summarise</span>(<span class="at">TOTAL_BIRTH =</span> <span class="fu">sum</span>(TOTAL_BIRTH)) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb10-5"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> CALF_BREED_TYPE, <span class="at">y =</span> TOTAL_BIRTH, <span class="at">fill =</span> CALF_BREED_TYPE)) <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb10-6"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb10-7"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span><a rel="noopener" href="#cb10-8"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Comparison of Beef and Dairy Breed Births in 2016&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Calf Breed Type&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Total Births&quot;</span>)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output-display">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"/></p>
+</div>
+</div>
+<p>The bar chart illustrates the total number of cattle births for each month in the year 2016, revealing a seasonal pattern in cattle breeding. The most significant number of births occur in February, with nearly 400,000, followed closely by March. After the spring peak, there’s a steady decline in births from April through to the end of the year. The chart indicates that the cattle industry likely plans breeding schedules to coincide with favorable conditions, leading to a concentration of births in the early part of the year. The consistency in birth numbers from June to December suggests a deliberate management of breeding cycles to suit operational or environmental conditions.</p>
+<p>The bar chart “Comparison of Beef and Dairy Breed Births in 2016” presents a side-by-side comparison of the total number of births for beef and dairy cattle breeds within the year. The red bar represents beef breeds and towers significantly, indicating over 1,000,000 births. In contrast, the blue bar represents dairy breeds, showing more than 500,000 births but considerably fewer than beef breeds. The disparity suggests a higher number of beef breed cattle were born in 2016 compared to dairy breeds, which could be attributed to various factors such as market demand or specific breeding programs within the cattle industry during that year. The chart clearly demonstrates the predominance of beef breed births over dairy in the recorded period.</p>
+<p>PART:2</p>
+<p>The `janitor` package in R significantly streamlines data cleaning and preparation, making it a valuable asset for data analysts and researchers. Key features include `clean_names()`, which standardizes column names for consistency, and `tabyl()`, which simplifies the creation of frequency tables for data examination. It also offers robust tools for managing duplicates, reordering and cleaning factor levels, and performing advanced cross-tabulations. Additionally, the package provides functions for decorative formatting, like adding totals and subtotals to tables, and facilitates flexible data type conversions. Renowned for its user-friendly and intuitive functions, `janitor` enhances the efficiency and effectiveness of data cleaning processes, making it a popular choice in the R community.</p>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb11-1"></a><span class="co">#Package</span></span>
+<span><a rel="noopener" href="#cb11-2"></a><span class="fu">library</span>(janitor)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;janitor&#39;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    chisq.test, fisher.test</code></pre>
+</div>
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb14-1"></a><span class="co">#Function 1</span></span>
+<span><a rel="noopener" href="#cb14-2"></a>cattle_birth <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">clean_names</span>()</span>
+<span><a rel="noopener" href="#cb14-3"></a><span class="fu">head</span>(cattle_birth)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  birth_year county_origin birth_month calf_breed_type total_birth
+1       2016        CARLOW           4            BEEF        3670
+2       2016        CARLOW           4           DAIRY         680
+3       2016        CARLOW           8            BEEF         778
+4       2016        CARLOW           8           DAIRY          80
+5       2016        CARLOW          12            BEEF         835
+6       2016        CARLOW          12           DAIRY         123</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb16-1"></a><span class="co">#Function 2</span></span>
+<span><a rel="noopener" href="#cb16-2"></a>breed_frequency <span class="ot">&lt;-</span> cattle_birth <span class="sc">%&gt;%</span> <span class="fu">tabyl</span>(calf_breed_type)</span>
+<span><a rel="noopener" href="#cb16-3"></a><span class="fu">print</span>(breed_frequency)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> calf_breed_type   n percent
+            BEEF 312     0.5
+           DAIRY 312     0.5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb18-1"></a><span class="co">#Function 3</span></span>
+<span><a rel="noopener" href="#cb18-2"></a><span class="fu">library</span>(dplyr)</span>
+<span><a rel="noopener" href="#cb18-3"></a><span class="fu">library</span>(janitor)</span>
+<span><a rel="noopener" href="#cb18-4"></a>monthly_totals <span class="ot">&lt;-</span> cattle_birth <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb18-5"></a>                  <span class="fu">group_by</span>(birth_month) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb18-6"></a>                  <span class="fu">summarise</span>(<span class="at">Total_Births =</span> <span class="fu">sum</span>(total_birth))</span>
+<span><a rel="noopener" href="#cb18-7"></a>monthly_totals_with_total <span class="ot">&lt;-</span> monthly_totals <span class="sc">%&gt;%</span> </span>
+<span><a rel="noopener" href="#cb18-8"></a>                             <span class="fu">adorn_totals</span>(<span class="st">&quot;row&quot;</span>)</span>
+<span><a rel="noopener" href="#cb18-9"></a><span class="fu">print</span>(monthly_totals_with_total)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> birth_month Total_Births
+           1       219716
+           2       569903
+           3       472714
+           4       340127
+           5       207919
+           6       103965
+           7        67717
+           8        59592
+           9        65185
+          10        66817
+          11        58691
+          12        48352
+       Total      2280698</code></pre>
+</div>
+</div>
+<p>PART:3</p>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb20-1"></a><span class="fu">library</span>(dplyr)</span>
+<span><a rel="noopener" href="#cb20-2"></a><span class="co"># Define the S3 class</span></span>
+<span><a rel="noopener" href="#cb20-3"></a><span class="fu">setClass</span>(<span class="st">&quot;CattleStats&quot;</span>, <span class="at">slots =</span> <span class="fu">c</span>(<span class="at">stats =</span> <span class="st">&quot;data.frame&quot;</span>))</span>
+<span><a rel="noopener" href="#cb20-4"></a></span>
+<span><a rel="noopener" href="#cb20-5"></a><span class="co"># The main function</span></span>
+<span><a rel="noopener" href="#cb20-6"></a>analyzeCattleBirths <span class="ot">&lt;-</span> <span class="cf">function</span>(data, group_by) {</span>
+<span><a rel="noopener" href="#cb20-7"></a>  <span class="fu">require</span>(dplyr)</span>
+<span><a rel="noopener" href="#cb20-8"></a>  </span>
+<span><a rel="noopener" href="#cb20-9"></a>  <span class="co"># Calculating statistics</span></span>
+<span><a rel="noopener" href="#cb20-10"></a>  stats <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span><a rel="noopener" href="#cb20-11"></a>    <span class="fu">group_by</span>(<span class="sc">!!</span><span class="fu">sym</span>(group_by)) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb20-12"></a>    <span class="fu">summarise</span>(<span class="at">Mean =</span> <span class="fu">mean</span>(TOTAL_BIRTH),</span>
+<span><a rel="noopener" href="#cb20-13"></a>              <span class="at">Median =</span> <span class="fu">median</span>(TOTAL_BIRTH),</span>
+<span><a rel="noopener" href="#cb20-14"></a>              <span class="at">Std_Dev =</span> <span class="fu">sd</span>(TOTAL_BIRTH)) <span class="sc">%&gt;%</span></span>
+<span><a rel="noopener" href="#cb20-15"></a>    <span class="fu">as.data.frame</span>()</span>
+<span><a rel="noopener" href="#cb20-16"></a></span>
+<span><a rel="noopener" href="#cb20-17"></a>  <span class="co"># Creating S3 object</span></span>
+<span><a rel="noopener" href="#cb20-18"></a>  stats_obj <span class="ot">&lt;-</span> <span class="fu">new</span>(<span class="st">&quot;CattleStats&quot;</span>, <span class="at">stats =</span> stats)</span>
+<span><a rel="noopener" href="#cb20-19"></a>  <span class="fu">class</span>(stats_obj) <span class="ot">&lt;-</span> <span class="st">&quot;CattleStats&quot;</span></span>
+<span><a rel="noopener" href="#cb20-20"></a>  <span class="fu">return</span>(stats_obj)</span>
+<span><a rel="noopener" href="#cb20-21"></a>}</span>
+<span><a rel="noopener" href="#cb20-22"></a></span>
+<span><a rel="noopener" href="#cb20-23"></a><span class="co"># Print method for CattleStats</span></span>
+<span><a rel="noopener" href="#cb20-24"></a>print.CattleStats <span class="ot">&lt;-</span> <span class="cf">function</span>(object) {</span>
+<span><a rel="noopener" href="#cb20-25"></a>  <span class="fu">print</span>(object<span class="sc">@</span>stats)</span>
+<span><a rel="noopener" href="#cb20-26"></a>}</span>
+<span><a rel="noopener" href="#cb20-27"></a></span>
+<span><a rel="noopener" href="#cb20-28"></a><span class="co"># Summary method for CattleStats</span></span>
+<span><a rel="noopener" href="#cb20-29"></a>summary.CattleStats <span class="ot">&lt;-</span> <span class="cf">function</span>(object) {</span>
+<span><a rel="noopener" href="#cb20-30"></a>  <span class="fu">summary</span>(object<span class="sc">@</span>stats)</span>
+<span><a rel="noopener" href="#cb20-31"></a>}</span>
+<span><a rel="noopener" href="#cb20-32"></a></span>
+<span><a rel="noopener" href="#cb20-33"></a><span class="co"># Plot method for CattleStats</span></span>
+<span><a rel="noopener" href="#cb20-34"></a>plot.CattleStats <span class="ot">&lt;-</span> <span class="cf">function</span>(object, group_by, ...) {</span>
+<span><a rel="noopener" href="#cb20-35"></a>  <span class="fu">barplot</span>(<span class="fu">as.matrix</span>(object<span class="sc">@</span>stats[, <span class="sc">-</span><span class="dv">1</span>]), <span class="at">beside =</span> <span class="cn">TRUE</span>, </span>
+<span><a rel="noopener" href="#cb20-36"></a>          <span class="at">main =</span> <span class="st">&quot;Cattle Birth Statistics&quot;</span>,</span>
+<span><a rel="noopener" href="#cb20-37"></a>          <span class="at">ylab =</span> <span class="st">&quot;Value&quot;</span>, <span class="at">xlab =</span> group_by,</span>
+<span><a rel="noopener" href="#cb20-38"></a>          <span class="at">col =</span> <span class="fu">rainbow</span>(<span class="fu">nrow</span>(object<span class="sc">@</span>stats)),</span>
+<span><a rel="noopener" href="#cb20-39"></a>          <span class="at">legend.text =</span> <span class="fu">rownames</span>(object<span class="sc">@</span>stats), ...)</span>
+<span><a rel="noopener" href="#cb20-40"></a>}</span>
+<span><a rel="noopener" href="#cb20-41"></a></span>
+<span><a rel="noopener" href="#cb20-42"></a><span class="co"># Now execute the function to create the result object</span></span>
+<span><a rel="noopener" href="#cb20-43"></a>result <span class="ot">&lt;-</span> <span class="fu">analyzeCattleBirths</span>(data, <span class="st">&quot;BIRTH_MONTH&quot;</span>)</span>
+<span><a rel="noopener" href="#cb20-44"></a></span>
+<span><a rel="noopener" href="#cb20-45"></a><span class="co"># Now you can print, summarize, and plot the result</span></span>
+<span><a rel="noopener" href="#cb20-46"></a><span class="fu">print</span>(result)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   BIRTH_MONTH       Mean Median    Std_Dev
+1            1  4225.3077 2345.5  6666.5186
+2            2 10959.6731 5747.0 15630.9017
+3            3  9090.6538 6012.5  9642.6629
+4            4  6540.9038 4041.0  7228.8914
+5            5  3998.4423 2027.5  4431.4446
+6            6  1999.3269  884.5  2268.3274
+7            7  1302.2500  601.0  1461.9106
+8            8  1146.0000  634.0  1243.7477
+9            9  1253.5577  909.5  1138.9503
+10          10  1284.9423  928.0  1047.1170
+11          11  1128.6731  868.0   908.3569
+12          12   929.8462  696.5   807.0202</code></pre>
+</div>
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb22-1"></a><span class="fu">summary</span>(result)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  BIRTH_MONTH         Mean             Median          Std_Dev     
+ Min.   : 1.00   Min.   :  929.8   Min.   : 601.0   Min.   :  807  
+ 1st Qu.: 3.75   1st Qu.: 1226.7   1st Qu.: 825.1   1st Qu.: 1116  
+ Median : 6.50   Median : 1650.8   Median : 918.8   Median : 1865  
+ Mean   : 6.50   Mean   : 3655.0   Mean   :2141.2   Mean   : 4373  
+ 3rd Qu.: 9.25   3rd Qu.: 4804.2   3rd Qu.:2769.4   3rd Qu.: 6807  
+ Max.   :12.00   Max.   :10959.7   Max.   :6012.5   Max.   :15631  </code></pre>
+</div>
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb24-1"></a><span class="fu">plot</span>(result, <span class="at">group_by =</span> <span class="st">&quot;BIRTH_MONTH&quot;</span>) <span class="co"># The corrected call to your plot method</span></span></code><i class="bi"></i></pre></div>
+<div class="cell-output-display">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"/></p>
+</div>
+</div>
+<p>The “Cattle Birth Statistics” bar chart compares the mean, median, and standard deviation of cattle births by month for an unspecified year. The mean and median values peak in February, suggesting that this month typically has the highest average number of births. The standard deviation is greatest in January, indicating a larger variability in the number of births during this month compared to others. This could reflect a seasonal breeding pattern, with a more consistent number of births around the peak month and greater fluctuations at the beginning of the year. Overall, the chart provides a clear visual representation of cattle birth trends and variability throughout the year.</p>
+<p>Citation</p>
+<div class="cell">
+<div class="sourceCode cell-code"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span><a rel="noopener" href="#cb25-1"></a><span class="fu">citation</span>(<span class="st">&quot;janitor&quot;</span>)</span></code><i class="bi"></i></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>To cite package &#39;janitor&#39; in publications use:
+
+  Firke S (2023). _janitor: Simple Tools for Examining and Cleaning
+  Dirty Data_. R package version 2.2.0,
+  &lt;https://CRAN.R-project.org/package=janitor&gt;.
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {janitor: Simple Tools for Examining and Cleaning Dirty Data},
+    author = {Sam Firke},
+    year = {2023},
+    note = {R package version 2.2.0},
+    url = {https://CRAN.R-project.org/package=janitor},
+  }</code></pre>
+</div>
+</div>
+
+</main>
+
+
+</div> 
+
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/2024.8.191/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+						if (document.querySelector('math') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+							document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+								elm.setAttribute('style', 'display: block; height: 0.5rem;');
+							});
+
+							window.D2L.MathJax.loadMathJax({
+								outputScale: 1.5,
+								renderLatex: true,
+								enableMML3Support: false
+							});
+						}
+					});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2024.8.191/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2024.8.191/unbundled/embeds.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					window.D2L.EmbedRenderer.renderEmbeds(document.body);
+				});</script></body></html>
